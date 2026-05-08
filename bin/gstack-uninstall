@@ -12,7 +12,7 @@
 #   ~/.codex/skills/gstack*       — Codex skill install + per-skill symlinks
 #   ~/.factory/skills/gstack*     — Factory Droid skill install + per-skill symlinks
 #   ~/.kiro/skills/gstack*        — Kiro skill install + per-skill symlinks
-#   ~/.gstack/                    — global state (config, analytics, sessions, projects,
+#   ~/.gstack/                    — global state (config, sessions, projects,
 #                                   repos, installation-id, browse error logs)
 #   .claude/skills/gstack*        — project-local skill install (--local installs)
 #   .gstack/                      — per-project browse state (in current git repo)
@@ -225,13 +225,6 @@ if [ -n "$_GIT_ROOT" ]; then
     rm -rf "$_GIT_ROOT/.gstack-worktrees"
     REMOVED+=("$_GIT_ROOT/.gstack-worktrees/")
   fi
-fi
-
-# ─── Remove SessionStart hook from Claude Code settings ─────
-SETTINGS_HOOK="$(dirname "$0")/gstack-settings-hook"
-SESSION_UPDATE="$(dirname "$0")/gstack-session-update"
-if [ -x "$SETTINGS_HOOK" ]; then
-  "$SETTINGS_HOOK" remove "$SESSION_UPDATE" 2>/dev/null && REMOVED+=("SessionStart hook") || true
 fi
 
 # ─── Remove global state ────────────────────────────────────

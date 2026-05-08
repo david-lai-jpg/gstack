@@ -12,7 +12,6 @@ happens after you say yes.
 | Claude Code session JSONL | `transcript` | `~/.claude/projects/*/` | High — full conversations including tool I/O |
 | Codex CLI session JSONL | `transcript` | `~/.codex/sessions/YYYY/MM/DD/` | High |
 | Cursor session SQLite (V1.0.1) | `transcript` | `~/Library/Application Support/Cursor/` | Same — deferred V1.0.1 |
-| Eureka log | `eureka` | `~/.gstack/analytics/eureka.jsonl` | Medium — your insights, often non-secret |
 | Project learnings | `learning` | `~/.gstack/projects/<slug>/learnings.jsonl` | Medium |
 | Project timeline | `timeline` | `~/.gstack/projects/<slug>/timeline.jsonl` | Low |
 | CEO plans | `ceo-plan` | `~/.gstack/projects/<slug>/ceo-plans/*.md` | Medium |
@@ -63,7 +62,7 @@ sessions.**
 Storage tier depends on your gbrain engine (set during `/setup-gbrain`):
 
 - **Supabase configured:** code + transcripts go to Supabase Storage
-  (multi-Mac native). Curated memory (eureka/learnings/etc.) goes to the
+  (multi-Mac native). Curated memory (learnings/plans/docs/etc.) goes to the
   brain-linked git repo via `gstack-brain-sync`.
 - **Local PGLite only:** everything stays on this Mac. Curated memory
   syncs via git if you've enabled brain-sync.
@@ -126,8 +125,6 @@ automatically includes:
 - `## Prior office-hours sessions in this repo` (last 5)
 - `## Your builder profile snapshot` (latest entry)
 - `## Recent design docs for this project` (last 3)
-- `## Recent eureka moments` (last 5)
-
 So the "Welcome back, last time you were on X" beat is sourced from
 your actual data, not cold-start.
 

@@ -674,7 +674,7 @@ export function getCookiePickerHTML(serverPort: number): string {
       });
       delete importedSet[domain];
       renderImported();
-      renderSourceDomains(); // update checkmarks
+      renderSourceDomains(); // refresh checkmarks
     } catch (err) {
       showBanner('Remove failed for ' + domain + ': ' + err.message, 'error',
         err.action === 'retry' ? () => removeDomain(domain) : null);

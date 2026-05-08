@@ -4,7 +4,7 @@
  * Exercises the full Lane A → Lane B → Lane C value loop end-to-end:
  *
  *   1. Set up a fake $HOME with a Claude Code project + a Codex session +
- *      ~/.gstack/ artifacts (eureka, learning, ceo-plan, design-doc, retro,
+ *      ~/.gstack/ artifacts (learning, ceo-plan, design-doc, retro,
  *      builder-profile)
  *   2. Run gstack-memory-ingest --probe → verify counts match disk
  *   3. Run gstack-memory-ingest --bulk → verify state file gets written +
@@ -41,7 +41,6 @@ function makeFixtureHome(): string {
 function setupFixture(home: string): { gstackHome: string; counts: Record<string, number> } {
   const gstackHome = join(home, ".gstack");
   mkdirSync(gstackHome, { recursive: true });
-  mkdirSync(join(gstackHome, "analytics"), { recursive: true });
   mkdirSync(join(gstackHome, "projects", "test-repo", "ceo-plans"), { recursive: true });
   mkdirSync(join(gstackHome, "projects", "test-repo", "retros"), { recursive: true });
 
@@ -63,7 +62,6 @@ function setupFixture(home: string): { gstackHome: string; counts: Record<string
   writeFileSync(join(codexDir, "rollout-1.jsonl"), codexSession, "utf-8");
 
   // gstack artifacts
-  writeFileSync(join(gstackHome, "analytics", "eureka.jsonl"), '{"insight":"boil the lake"}\n', "utf-8");
   writeFileSync(join(gstackHome, "builder-profile.jsonl"), '{"date":"2026-05-01","mode":"startup"}\n', "utf-8");
   writeFileSync(join(gstackHome, "projects", "test-repo", "learnings.jsonl"), '{"key":"a","insight":"b","confidence":8}\n', "utf-8");
   writeFileSync(join(gstackHome, "projects", "test-repo", "timeline.jsonl"), '{"skill":"office-hours","event":"completed"}\n', "utf-8");
@@ -75,7 +73,6 @@ function setupFixture(home: string): { gstackHome: string; counts: Record<string
     gstackHome,
     counts: {
       transcript: 2, // claude + codex
-      eureka: 1,
       "builder-profile-entry": 1,
       learning: 1,
       timeline: 1,
@@ -111,7 +108,6 @@ describe("V1 memory ingest pipeline E2E", () => {
 
     // Spot-check that each type appears with the right count
     expect(r.stdout).toMatch(/transcript\s+2/);
-    expect(r.stdout).toMatch(/eureka\s+1/);
     expect(r.stdout).toMatch(/learning\s+1/);
     expect(r.stdout).toMatch(/ceo-plan\s+1/);
 
@@ -183,10 +179,14 @@ describe("V1 /gbrain-sync orchestrator E2E", () => {
 
     const r = runBun(SYNC, ["--dry-run"], env);
     expect(r.exitCode).toBe(0);
-    // Code stage uses native gbrain code surfaces (sources add + sync --strategy code)
-    // post-codex review; NOT `gbrain import` (markdown-only path).
-    expect(r.stdout).toContain("would: gbrain sources add");
-    expect(r.stdout).toContain("gbrain sync --strategy code");
+    // Code stage uses native gbrain code surfaces when the gbrain CLI is present;
+    // environments without gbrain skip it but still preview local memory/sync stages.
+    if (r.stdout.includes("SKIP  code")) {
+      expect(r.stdout).toContain("gbrain CLI not in PATH");
+    } else {
+      expect(r.stdout).toContain("would: gbrain sources add");
+      expect(r.stdout).toContain("gbrain sync --strategy code");
+    }
     expect(r.stdout).toContain("would: gstack-memory-ingest");
     expect(r.stdout).toContain("would: gstack-brain-sync");
 
@@ -229,12 +229,11 @@ describe("V1 retrieval surface — real V1 manifest dispatch", () => {
     const r = runBun(CONTEXT, ["--skill-file", skillFile, "--repo", "test-repo", "--explain", "--quiet"], env);
     expect(r.exitCode).toBe(0);
     expect(r.stderr).toContain("mode=manifest");
-    // office-hours has 4 queries (D5/D6 cherry-pick #1 + builder-profile + design-doc + eureka)
-    expect(r.stderr).toContain("queries=4");
+    // office-hours has 3 queries (prior sessions + builder-profile + design-doc)
+    expect(r.stderr).toContain("queries=3");
     expect(r.stderr).toContain("prior-sessions");
     expect(r.stderr).toContain("builder-profile");
     expect(r.stderr).toContain("design-doc-history");
-    expect(r.stderr).toContain("prior-eureka");
 
     rmSync(home, { recursive: true, force: true });
   });

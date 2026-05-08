@@ -48,7 +48,7 @@ describe('isPermissionDialogVisible', () => {
     const sample = `
       Some preamble output
 
-      Bash command \`gstack-config get telemetry\` requires permission to run.
+      Bash command \`gstack-config get proactive\` requires permission to run.
 
       ❯ 1. Yes
         2. Yes, and always allow
@@ -212,7 +212,7 @@ describe('classifyVisible (runtime path through the runner classifier)', () => {
 
   test('permission dialog (Bash) → returns null (skip, keep polling)', () => {
     const visible = `
-      Bash command \`gstack-update-check\` requires permission to run.
+      Bash command \`gstack-config get proactive\` requires permission to run.
 
       ❯ 1. Yes
         2. No

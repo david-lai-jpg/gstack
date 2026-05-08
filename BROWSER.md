@@ -23,7 +23,7 @@ bun install && bun run build
 B=./browse/dist/browse           # or ~/.claude/skills/gstack/browse/dist/browse
 
 # Drive a page
-$B goto https://news.ycombinator.com
+$B goto https://example.com
 $B snapshot -i                   # @e refs you can click/fill/inspect later
 $B click @e30                    # click ref 30 from the snapshot
 $B text                          # get clean page text
@@ -1216,7 +1216,6 @@ browse/
 │   ├── project-slug.ts          # Project slug derivation for state paths
 │   ├── error-handling.ts        # safeUnlink / safeKill / isProcessAlive
 │   ├── platform.ts              # OS detection (macOS, Linux, Windows)
-│   ├── telemetry.ts             # Anonymous opt-in usage telemetry
 │   ├── find-browse.ts           # Locate running daemon or bootstrap
 │   └── config.ts                # Config resolution (env / files)
 ├── test/                        # Integration tests + HTML fixtures

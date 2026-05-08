@@ -72,7 +72,7 @@ async function waitForTunnelPort(stateFile: string, timeoutMs = 20_000): Promise
 }
 
 async function spawnDaemonWithTunnel(): Promise<DaemonHandle> {
-  // Isolate this test's analytics + denial log directory so we can assert on a
+  // Isolate this test's state directory so we can assert on a
   // fresh attempts.jsonl without colliding with the user's real ~/.gstack.
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pair-agent-tunnel-eval-'));
   const stateFile = path.join(tempDir, 'browse.json');

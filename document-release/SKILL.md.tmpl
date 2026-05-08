@@ -126,14 +126,14 @@ Read each documentation file and cross-reference it against the diff. Use these 
 
 For each file, classify needed updates as:
 
-- **Auto-update** — Factual corrections clearly warranted by the diff: adding an item to a
+- **Direct correction** — Factual corrections clearly warranted by the diff: adding an item to a
   table, updating a file path, fixing a count, updating a project structure tree.
 - **Ask user** — Narrative changes, section removal, security model changes, large rewrites
   (more than ~10 lines in one section), ambiguous relevance, adding entirely new sections.
 
 ---
 
-## Step 3: Apply Auto-Updates
+## Step 3: Apply Direct Corrections
 
 Make all clear, factual updates directly using the Edit tool.
 
@@ -141,7 +141,7 @@ For each file modified, output a one-line summary describing **what specifically
 just "Updated README.md" but "README.md: added /new-skill to skills table, updated skill count
 from 9 to 10."
 
-**Never auto-update:**
+**Never silently rewrite:**
 - README introduction or project positioning
 - ARCHITECTURE philosophy or design rationale
 - Security model descriptions

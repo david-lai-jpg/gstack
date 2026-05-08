@@ -35,7 +35,7 @@ export interface SkillFrontmatter {
   name: string;
   /** One-line description (optional but recommended). */
   description?: string;
-  /** Primary hostname this skill targets, e.g. "news.ycombinator.com". */
+  /** Primary hostname this skill targets, e.g. "example.com". */
   host: string;
   /** Trigger phrases the resolver matches against ("scrape hn frontpage"). */
   triggers: string[];

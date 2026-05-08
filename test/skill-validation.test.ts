@@ -223,60 +223,25 @@ describe('Generated SKILL.md freshness', () => {
   });
 });
 
-// --- Update check preamble validation ---
+// --- Removed update check preamble validation ---
 
-describe('Update check preamble', () => {
-  const skillsWithUpdateCheck = [
-    'SKILL.md', 'browse/SKILL.md', 'qa/SKILL.md',
-    'qa-only/SKILL.md',
-    'setup-browser-cookies/SKILL.md',
-    'ship/SKILL.md', 'review/SKILL.md',
-    'plan-ceo-review/SKILL.md', 'plan-eng-review/SKILL.md',
-    'retro/SKILL.md',
-    'office-hours/SKILL.md', 'investigate/SKILL.md',
-    'plan-design-review/SKILL.md',
-    'design-review/SKILL.md',
-    'design-consultation/SKILL.md',
-    'document-release/SKILL.md',
-    'canary/SKILL.md',
-    'benchmark/SKILL.md',
-    'land-and-deploy/SKILL.md',
-    'setup-deploy/SKILL.md',
-    'cso/SKILL.md',
-  ];
+describe('Removed update check preamble', () => {
+  test('generated skills do not include session-start update checks', () => {
+    const skills = [
+      'SKILL.md', 'browse/SKILL.md', 'qa/SKILL.md', 'qa-only/SKILL.md',
+      'setup-browser-cookies/SKILL.md', 'ship/SKILL.md', 'review/SKILL.md',
+      'plan-ceo-review/SKILL.md', 'plan-eng-review/SKILL.md', 'retro/SKILL.md',
+      'office-hours/SKILL.md', 'investigate/SKILL.md', 'plan-design-review/SKILL.md',
+      'design-review/SKILL.md', 'design-consultation/SKILL.md',
+      'document-release/SKILL.md', 'canary/SKILL.md', 'benchmark/SKILL.md',
+      'land-and-deploy/SKILL.md', 'setup-deploy/SKILL.md', 'cso/SKILL.md',
+    ];
 
-  for (const skill of skillsWithUpdateCheck) {
-    test(`${skill} update check line ends with || true`, () => {
+    for (const skill of skills) {
       const content = fs.readFileSync(path.join(ROOT, skill), 'utf-8');
-      // The second line of the bash block must end with || true
-      // to avoid exit code 1 when _UPD is empty (up to date)
-      const match = content.match(/\[ -n "\$_UPD" \].*$/m);
-      expect(match).not.toBeNull();
-      expect(match![0]).toContain('|| true');
-    });
-  }
-
-  test('all skills with update check are generated from .tmpl', () => {
-    for (const skill of skillsWithUpdateCheck) {
-      const tmplPath = path.join(ROOT, skill + '.tmpl');
-      expect(fs.existsSync(tmplPath)).toBe(true);
+      expect(content).not.toContain('_UPD=');
+      expect(content).not.toContain('UPGRADE_AVAILABLE');
     }
-  });
-
-  test('update check bash block exits 0 when up to date', () => {
-    // Simulate the exact preamble command from SKILL.md
-    const result = Bun.spawnSync(['bash', '-c',
-      '_UPD=$(echo "" || true); [ -n "$_UPD" ] && echo "$_UPD" || true'
-    ], { stdout: 'pipe', stderr: 'pipe' });
-    expect(result.exitCode).toBe(0);
-  });
-
-  test('update check bash block exits 0 when upgrade available', () => {
-    const result = Bun.spawnSync(['bash', '-c',
-      '_UPD=$(echo "UPGRADE_AVAILABLE 0.3.3 0.4.0" || true); [ -n "$_UPD" ] && echo "$_UPD" || true'
-    ], { stdout: 'pipe', stderr: 'pipe' });
-    expect(result.exitCode).toBe(0);
-    expect(result.stdout.toString().trim()).toBe('UPGRADE_AVAILABLE 0.3.3 0.4.0');
   });
 });
 
@@ -640,21 +605,12 @@ describe('office-hours skill structure', () => {
     expect(content).toContain('Intrapreneurship');
   });
 
-  // YC founder discovery engine
-  test('contains YC apply CTA with ref tracking', () => {
-    expect(content).toContain('ycombinator.com/apply?ref=gstack');
-  });
-
   test('contains "What I noticed" design doc section', () => {
     expect(content).toContain('What I noticed about how you think');
   });
 
   test('contains golden age framing', () => {
     expect(content).toContain('golden age');
-  });
-
-  test('contains Garry Tan personal plea', () => {
-    expect(content).toContain('Garry Tan, the creator of GStack');
   });
 
   test('contains founder signal synthesis phase', () => {
@@ -708,8 +664,8 @@ describe('office-hours skill structure', () => {
     expect(content).toContain('quality score');
   });
 
-  test('contains spec review metrics path', () => {
-    expect(content).toContain('spec-review.jsonl');
+  test('does not write spec review metrics path', () => {
+    expect(content).not.toContain('spec-review.jsonl');
   });
 
   test('contains convergence guard', () => {
@@ -1272,7 +1228,7 @@ describe('QA report template', () => {
 describe('Codex skill', () => {
   test('codex/SKILL.md exists and has correct frontmatter', () => {
     const content = fs.readFileSync(path.join(ROOT, 'codex', 'SKILL.md'), 'utf-8');
-    expect(content).toContain('name: codex');
+    expect(content).toMatch(/^name: (gstack-)?codex$/m);
     expect(content).toContain('version: 1.0.0');
     expect(content).toContain('allowed-tools:');
   });

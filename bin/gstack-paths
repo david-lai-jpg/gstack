@@ -18,7 +18,7 @@
 # expansions ("$GSTACK_STATE_ROOT", not $GSTACK_STATE_ROOT).
 set -u
 
-# State root: where gstack writes projects/, sessions/, analytics/.
+# State root: where gstack writes projects/, sessions/, and local state.
 if [ -n "${GSTACK_HOME:-}" ]; then
   _state_root="$GSTACK_HOME"
 elif [ -n "${CLAUDE_PLUGIN_DATA:-}" ]; then

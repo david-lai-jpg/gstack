@@ -11,7 +11,7 @@
  * the question but the agent ignores the choice (e.g. always defaults
  * to EXPANSION) would not be caught by any prior test.
  *
- * Tier: periodic (not gate). Each run navigates 8-12 prior AskUserQuestions (telemetry,
+ * Tier: periodic (not gate). Each run navigates 8-12 prior AskUserQuestions (routing,
  * proactive, routing, vendoring, brain, office-hours, premise×3, approach)
  * before reaching Step 0F. At ~30s per AskUserQuestion that's a 4-6 min navigation
  * phase per case. The full 2-case suite runs ~12-15 min, $3-4. Too slow
@@ -72,7 +72,7 @@ async function navigateToModeAskUserQuestion(
   opts: { maxNav?: number; budgetMs?: number } = {},
 ): Promise<{ modeIndex: number; visibleAtMode: string }> {
   // /plan-ceo-review's mode AskUserQuestion (Step 0F) sits behind several preamble
-  // and Step 0A-0C-bis gates: telemetry, proactive, routing, vendoring,
+  // and Step 0A-0C-bis gates: proactive, routing, vendoring,
   // brain privacy, office-hours offer, premise challenge (3 questions),
   // approach selection. 12 hops is the conservative ceiling.
   const maxNav = opts.maxNav ?? 12;

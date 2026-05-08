@@ -180,13 +180,13 @@ TOP 10 SLOWEST RESOURCES
 1   vendor.chunk.js          script    320KB     480ms
 2   main.js                  script    250KB     320ms
 3   hero-image.webp          img       180KB     280ms
-4   analytics.js             script    45KB      250ms    ← third-party
+4   tracker.js             script    45KB      250ms    ← third-party
 5   fonts/inter-var.woff2    font      95KB      180ms
 ...
 
 RECOMMENDATIONS:
 - vendor.chunk.js: Consider code-splitting — 320KB is large for initial load
-- analytics.js: Load async/defer — blocks rendering for 250ms
+- tracker.js: Load async/defer — blocks rendering for 250ms
 - hero-image.webp: Add width/height to prevent CLS, consider lazy loading
 ```
 

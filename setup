@@ -138,7 +138,7 @@ fi
 # --local: install to .claude/skills/ in the current working directory (deprecated)
 if [ "$LOCAL_INSTALL" -eq 1 ]; then
   echo "Warning: --local is deprecated. Use global install + --team instead." >&2
-  echo "  See: https://github.com/garrytan/gstack#team-mode" >&2
+  echo "  See: https://github.com/gstack/gstack#team-mode" >&2
   if [ "$HOST" = "codex" ]; then
     echo "Error: --local is only supported for Claude Code (not Codex)." >&2
     exit 1
@@ -249,7 +249,7 @@ if [ "$NEEDS_BUILD" -eq 1 ]; then
   # macOS kills with SIGKILL (exit 137). The two-step remove+re-sign is
   # required because a naive `codesign -s - -f` fails when the existing
   # signature block is corrupt. This is idempotent and costs <1s.
-  # See: https://github.com/garrytan/gstack/issues/997
+  # See: https://github.com/gstack/gstack/issues/997
   if [ "$(uname -s)" = "Darwin" ] && [ "$(uname -m)" = "arm64" ]; then
     for _bin in browse/dist/browse browse/dist/find-browse design/dist/design make-pdf/dist/pdf bin/gstack-global-discover; do
       _bin_path="$SOURCE_GSTACK_DIR/$_bin"
@@ -976,22 +976,11 @@ if [ ! -f "$HOME/.gstack/.welcome-seen" ]; then
 fi
 rm -f /tmp/gstack-latest-version
 
-# 10. Team mode: register/unregister SessionStart hook
-SETTINGS_HOOK="$SOURCE_GSTACK_DIR/bin/gstack-settings-hook"
-HOOK_CMD="$SOURCE_GSTACK_DIR/bin/gstack-session-update"
-
 if [ "$TEAM_MODE" -eq 1 ]; then
-  "$GSTACK_CONFIG" set auto_upgrade true 2>/dev/null || true
   "$GSTACK_CONFIG" set team_mode true 2>/dev/null || true
 
-  # Register SessionStart hook in Claude Code settings
-  if [ -x "$SETTINGS_HOOK" ]; then
-    "$SETTINGS_HOOK" add "$HOOK_CMD" 2>/dev/null || true
-  fi
-
   log ""
-  log "Team mode enabled: gstack will auto-update at the start of each Claude Code session."
-  log "  Hook: $HOOK_CMD"
+  log "Team mode enabled."
   log "  To disable: ./setup --no-team"
   log ""
   log "Bootstrap your repo:"
@@ -999,13 +988,7 @@ if [ "$TEAM_MODE" -eq 1 ]; then
 fi
 
 if [ "$NO_TEAM_MODE" -eq 1 ]; then
-  "$GSTACK_CONFIG" set auto_upgrade false 2>/dev/null || true
   "$GSTACK_CONFIG" set team_mode false 2>/dev/null || true
 
-  # Remove SessionStart hook from Claude Code settings
-  if [ -x "$SETTINGS_HOOK" ]; then
-    "$SETTINGS_HOOK" remove "$HOOK_CMD" 2>/dev/null || true
-  fi
-
-  log "Team mode disabled: auto-update hook removed."
+  log "Team mode disabled."
 fi

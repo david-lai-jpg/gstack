@@ -208,7 +208,7 @@ export const QUESTIONS = {
   },
 
   // -----------------------------------------------------------------------
-  // /office-hours — YC diagnostic + builder brainstorm
+  // /office-hours — product diagnostic + builder brainstorm
   // -----------------------------------------------------------------------
   'office-hours-mode-goal': {
     id: 'office-hours-mode-goal',
@@ -493,22 +493,14 @@ export const QUESTIONS = {
     id: 'gstack-upgrade-inline',
     skill: 'gstack-upgrade',
     category: 'approval',
-    door_type: 'two-way',
-    options: ['yes-upgrade', 'always-auto', 'not-now', 'never-ask'],
-    description: "Upgrade gstack now? (Also: always auto-upgrade, snooze, or disable the prompt.)",
+    door_type: 'one-way',
+    options: ['yes-upgrade', 'cancel'],
+    description: "Upgrade gstack now?",
   },
 
   // -----------------------------------------------------------------------
-  // Preamble one-time prompts (telemetry, proactive, routing)
+  // Preamble one-time prompts (proactive, routing)
   // -----------------------------------------------------------------------
-  'preamble-telemetry-consent': {
-    id: 'preamble-telemetry-consent',
-    skill: 'preamble',
-    category: 'approval',
-    door_type: 'two-way',
-    options: ['community', 'anonymous', 'off'],
-    description: "Share usage data with gstack? community (recommended) / anonymous / off",
-  },
   'preamble-proactive-behavior': {
     id: 'preamble-proactive-behavior',
     skill: 'preamble',
@@ -532,14 +524,6 @@ export const QUESTIONS = {
     door_type: 'two-way',
     options: ['accept', 'keep-vendored'],
     description: "This repo has vendored gstack (deprecated) — migrate to team mode?",
-  },
-  'preamble-completeness-intro': {
-    id: 'preamble-completeness-intro',
-    skill: 'preamble',
-    category: 'approval',
-    door_type: 'two-way',
-    options: ['accept', 'skip'],
-    description: "Open the Boil-the-Lake essay in your browser? (one-time intro)",
   },
   'preamble-cross-project-learnings': {
     id: 'preamble-cross-project-learnings',

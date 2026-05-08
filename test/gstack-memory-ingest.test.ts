@@ -115,20 +115,17 @@ describe("gstack-memory-ingest CLI", () => {
     rmSync(home, { recursive: true, force: true });
   });
 
-  it("--probe finds gstack artifacts (learnings, eureka, ceo-plan)", () => {
+  it("--probe finds gstack artifacts (learnings, ceo-plan)", () => {
     const home = makeTestHome();
     const gstackHome = join(home, ".gstack");
-    mkdirSync(join(gstackHome, "analytics"), { recursive: true });
     mkdirSync(join(gstackHome, "projects", "foo-bar", "ceo-plans"), { recursive: true });
 
-    writeFileSync(join(gstackHome, "analytics", "eureka.jsonl"), '{"insight":"lake first"}\n');
     writeFileSync(join(gstackHome, "projects", "foo-bar", "learnings.jsonl"), '{"key":"a","insight":"b"}\n');
     writeFileSync(join(gstackHome, "projects", "foo-bar", "ceo-plans", "2026-05-01-test.md"), "# Plan\n");
 
     const r = runScript(["--probe"], { HOME: home, GSTACK_HOME: gstackHome });
     expect(r.exitCode).toBe(0);
-    expect(r.stdout).toContain("Total files in window: 3");
-    expect(r.stdout).toContain("eureka");
+    expect(r.stdout).toContain("Total files in window: 2");
     expect(r.stdout).toContain("learning");
     expect(r.stdout).toContain("ceo-plan");
     rmSync(home, { recursive: true, force: true });
@@ -137,17 +134,15 @@ describe("gstack-memory-ingest CLI", () => {
   it("--sources filter limits the walk to specific types", () => {
     const home = makeTestHome();
     const gstackHome = join(home, ".gstack");
-    mkdirSync(join(gstackHome, "analytics"), { recursive: true });
     mkdirSync(join(gstackHome, "projects", "foo", "ceo-plans"), { recursive: true });
 
-    writeFileSync(join(gstackHome, "analytics", "eureka.jsonl"), '{"insight":"x"}\n');
     writeFileSync(join(gstackHome, "projects", "foo", "learnings.jsonl"), '{"key":"a"}\n');
 
-    const r = runScript(["--probe", "--sources", "eureka"], { HOME: home, GSTACK_HOME: gstackHome });
+    const r = runScript(["--probe", "--sources", "learning"], { HOME: home, GSTACK_HOME: gstackHome });
     expect(r.exitCode).toBe(0);
     expect(r.stdout).toContain("Total files in window: 1");
-    expect(r.stdout).toContain("eureka");
-    expect(r.stdout).not.toContain("learning ");
+    expect(r.stdout).toContain("learning");
+    expect(r.stdout).not.toContain("ceo-plan");
     rmSync(home, { recursive: true, force: true });
   });
 

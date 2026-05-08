@@ -78,25 +78,6 @@ describe('secret-sink-harness — positive controls', () => {
     expect(fileLeaks[0].where).toBe('.gstack/debug.log');
   });
 
-  test('catches a seed leaked into the telemetry channel', async () => {
-    const bin = makeLeakyBin(
-      'leak-telemetry',
-      'mkdir -p "$HOME/.gstack/analytics" && ' +
-      'echo "{\\"event\\":\\"x\\",\\"leaked_secret\\":\\"$LEAK_SEED\\"}" ' +
-      '  >> "$HOME/.gstack/analytics/skill-usage.jsonl"'
-    );
-    const seed = 'telemetry-leaked-abc123xyz';
-    const r = await runWithSecretSink({
-      bin,
-      args: [],
-      seeds: [seed],
-      env: { LEAK_SEED: seed },
-    });
-    const telemetryLeaks = r.leaks.filter((l) => l.channel === 'telemetry');
-    expect(telemetryLeaks.length).toBeGreaterThan(0);
-    expect(telemetryLeaks[0].where).toContain('analytics/');
-  });
-
   test('catches a seed leaked in base64-encoded form (auth header pattern)', async () => {
     // printf (not echo) so no trailing newline — matches how real auth
     // headers encode: base64(seed) exactly, not base64(seed + "\n").

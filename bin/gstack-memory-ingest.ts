@@ -22,7 +22,6 @@
  *   ~/.gstack/projects/<slug>/timeline.jsonl        — typed: timeline
  *   ~/.gstack/projects/<slug>/ceo-plans/*.md        — typed: ceo-plan
  *   ~/.gstack/projects/<slug>/*-design-*.md         — typed: design-doc
- *   ~/.gstack/analytics/eureka.jsonl                — typed: eureka
  *   ~/.gstack/builder-profile.jsonl                 — typed: builder-profile-entry
  *
  * State: ~/.gstack/.transcript-ingest-state.json (LOCAL per ED1, never synced).
@@ -77,7 +76,6 @@ interface CliArgs {
 
 type MemoryType =
   | "transcript"
-  | "eureka"
   | "learning"
   | "timeline"
   | "ceo-plan"
@@ -148,7 +146,6 @@ const DEFAULT_INCREMENTAL_BUDGET_MS = 50;
 
 const ALL_TYPES: MemoryType[] = [
   "transcript",
-  "eureka",
   "learning",
   "timeline",
   "ceo-plan",
@@ -390,12 +387,6 @@ function* walkCodexSessions(ctx: WalkContext): Generator<{ path: string; type: M
 
 function* walkGstackArtifacts(ctx: WalkContext): Generator<{ path: string; type: MemoryType }> {
   const projectsRoot = join(GSTACK_HOME, "projects");
-
-  // Eureka log: ~/.gstack/analytics/eureka.jsonl
-  const eurekaLog = join(GSTACK_HOME, "analytics", "eureka.jsonl");
-  if (existsSync(eurekaLog) && ctx.args.sources.has("eureka")) {
-    yield { path: eurekaLog, type: "eureka" };
-  }
 
   // Builder profile: ~/.gstack/builder-profile.jsonl
   const builderProfile = join(GSTACK_HOME, "builder-profile.jsonl");
@@ -841,7 +832,6 @@ async function probeMode(args: CliArgs): Promise<ProbeReport> {
 
   const byType: Record<MemoryType, { count: number; bytes: number }> = {
     transcript: { count: 0, bytes: 0 },
-    eureka: { count: 0, bytes: 0 },
     learning: { count: 0, bytes: 0 },
     timeline: { count: 0, bytes: 0 },
     "ceo-plan": { count: 0, bytes: 0 },
